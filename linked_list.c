@@ -33,6 +33,7 @@ struct Node{
 typedef Node* NodePtr;
 #define SUCCESS 1
 #define FAIL -1
+#define FALSE -1
 
 //Function to display list - compress
 void displaylist(NodePtr head)
@@ -54,9 +55,10 @@ void displaylist(NodePtr head)
 //#define Insertion_end
 //3. Insertion at end(given head & tail pointer)
 //#define Insertion_end_tail
-//4. Insert at particular position (ToDo)
+//4. Insert at particular position
+//#define Insertion_position
 //5. Insert in Sorted List (ToDo)
-
+#define Insertion_sorted
 //Code to insert at beginning of linkedlist - compress
 #ifdef Insertion_beginning
 int InsertNode(NodePtr* head,int val)
@@ -289,4 +291,237 @@ int main()
 return 0;
 }
 
+#endif
+
+//Code to insert element at any arbitrary position on linked list
+#ifdef Insertion_position
+int InsertNode(NodePtr* head, int val,int Nodeposition)
+{
+  NodePtr temp;
+  temp=malloc(1*sizeof(Node));
+  if(!temp)
+  {
+    printf("\nNode Creation (malloc) Failure");
+    return FAIL;
+  }
+  temp->value=val;
+  temp->next=NULL;
+  if(*head==NULL)
+  {
+      *head=temp;
+      return SUCCESS;
+  }
+  else
+  {
+    NodePtr currptr=*head;
+    //record number of elements in list, first.
+    int list_no_ele=0;
+    while((currptr->next)!=NULL)
+    {
+      list_no_ele++;
+      currptr=currptr->next;
+    }
+    list_no_ele++;
+    printf("\nNumber of elements in list = %d",list_no_ele);
+
+    printf("\nPosition to insert = %d",Nodeposition);
+
+    printf("\nElement to insert = %d",val);
+
+    if(Nodeposition==list_no_ele + 1)
+    {
+      printf("\nInserting element at end of list");
+
+      currptr->next=temp;
+      return SUCCESS;
+    }
+    else if(Nodeposition>(list_no_ele+1))
+    {
+      printf("\nVery large position no entered. Will ignore and insert at end of list");
+      currptr->next=temp;
+      return SUCCESS;
+    }
+    else
+    {
+      printf("\nWill insert at appropriate position");
+      //Reset currptr
+      currptr=*head;
+      int counter=1;
+      if(Nodeposition==0)
+      {
+        temp->next=currptr;
+        *head=temp;
+        return SUCCESS;
+      }
+      while(counter<Nodeposition)
+      {
+        counter++;
+        currptr=currptr->next;
+      }
+      temp->next=currptr->next;
+      currptr->next=temp;
+      return SUCCESS;
+
+    }
+
+  }
+}
+int main()
+{
+  int arr[5]={1,2,3,4,5};
+  NodePtr headPtr=NULL;
+  int ret=FALSE;
+  ret=InsertNode(&(headPtr),arr[0],1);
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[1],2);
+
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[2],3);
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[3],4);
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[4],5);
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[0],0);
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[1],2);
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[2],4);
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[3],6);
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[4],8);
+
+  displaylist(headPtr);
+
+
+
+  return 0;
+}
+#endif
+
+#ifdef Insertion_sorted
+int InsertNode(NodePtr* head, int val)
+{
+NodePtr temp=malloc(1*(sizeof(NodePtr)));
+temp->value=val;
+temp->next=NULL;
+if(*head==NULL)
+{
+  *head=temp;
+  return SUCCESS;
+}
+NodePtr currptr=*head;
+NodePtr prevptr=*head;
+while((currptr->value<val))
+{
+
+  prevptr=currptr;
+  currptr=currptr->next;
+  if(currptr==NULL)
+  {
+    break;
+  }
+}
+if(currptr==NULL)
+{
+  prevptr->next=temp;
+  return SUCCESS;
+}
+else
+{
+  temp->next=prevptr->next;
+  prevptr->next=temp;
+  return SUCCESS;
+}
+
+}
+
+int main()
+{
+
+
+  int arr[5]={1,2,3,4,5};
+  NodePtr headPtr=NULL;
+
+  int ret=FALSE;
+  ret=InsertNode(&headPtr,arr[0]);
+
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[2]);
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[4]);
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[1]);
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[3]);
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[4]);
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[2]);
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[3]);
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[1]);
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[0]);
+
+  displaylist(headPtr);
+
+return 0;
+}
 #endif
