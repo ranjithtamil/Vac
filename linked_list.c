@@ -23,6 +23,12 @@ Insert into linkedlist:
   - At particular position
   - In sorted list (in order <ascending/descending>)
 */
+
+/*
+Search linkedlist:
+  - Search for element in linked list.
+  - Search for all occurrences and return count/positions of elements in list.
+*/
 #include<stdio.h>
 #include<stdlib.h>
 typedef struct Node Node;
@@ -57,8 +63,48 @@ void displaylist(NodePtr head)
 //#define Insertion_end_tail
 //4. Insert at particular position
 //#define Insertion_position
-//5. Insert in Sorted List (ToDo)
+//5. Insert in Sorted List
 #define Insertion_sorted
+
+//6. Search for Linked List
+//#define Search_list
+
+//7.Delete first element in linkedList
+//#define Delete_first_element
+//8. Delete last element in linkedList
+//#define Delete_last_element
+//9. Delete all occurrences of a value in linkedList
+//#define Delete_all_occurrences
+//10. Delete entire list, given head
+//#define Delete_list
+//11. Reverse Linked List
+#define Reverse_list
+
+#ifdef Search_list
+int searchlist(NodePtr* head,int elem,int* pos)
+{
+  if(*head==NULL)
+  {
+    printf("\nSorry, list is empty");
+    return FALSE;
+  }
+  NodePtr temp=malloc(1*sizeof(Node));
+  temp=*head;
+  int cntr=1;
+  while(temp!=NULL)
+  {
+    if(temp->value == elem)
+    {
+      *pos=cntr;
+      return SUCCESS;
+    }
+    cntr++;
+    temp=temp->next;
+  }
+  return FALSE;
+}
+#endif
+
 //Code to insert at beginning of linkedlist - compress
 #ifdef Insertion_beginning
 int InsertNode(NodePtr* head,int val)
@@ -427,6 +473,132 @@ int main()
 }
 #endif
 
+
+//Code to delete First element
+#ifdef Delete_first_element
+int Deletefirst(NodePtr* headPtr)
+{
+  printf("\nDeletefirst element\n");
+  if(*headPtr==NULL)
+  {
+    printf("Head is NULL.Empty List");
+    return FALSE;
+  }
+
+NodePtr temp=malloc(1*sizeof(Node));
+temp=*headPtr;
+*headPtr=(*headPtr)->next;
+free(temp);
+return SUCCESS;
+}
+#endif
+//End of Delete_first_element
+
+//Code to delete Last element
+#ifdef Delete_last_element
+int Deletelast(NodePtr* head)
+{
+  printf("\nDeleteLast");
+  if(*head==NULL)
+  {
+    printf("\nHead NULL. Empty list\n");
+    return FALSE;
+  }
+  NodePtr temp=malloc(1*sizeof(Node));
+  NodePtr prevptr=malloc(1*sizeof(Node));
+
+  temp=*head;
+  prevptr=*head;
+  while((temp->next)!=NULL)
+  {
+    prevptr=temp;
+    temp=temp->next;
+  }
+  if(prevptr==temp)
+  {
+    //Doubt on this one-doublefree
+    free(prevptr);
+    *head=NULL;
+  }
+  else
+  {
+  NodePtr tofreeptr=malloc(1*sizeof(Node));
+  tofreeptr=prevptr->next;
+  prevptr->next=temp->next;
+  free(tofreeptr);
+  }
+  return SUCCESS;
+}
+#endif
+//End of Delete_last_element
+
+//Code to Delete all occurrences of a variable
+#ifdef Delete_all_occurrences
+int Delete_occur(NodePtr* head,int val)
+{
+  printf("\nDeleting %d:",val);
+  NodePtr temp=malloc(1*sizeof(Node));
+  NodePtr freeptr=malloc(1*sizeof(Node));
+  temp=*head;
+
+  if(*head==NULL)
+  {
+    printf("\nHead NULL.EmptyList");
+    return FALSE;
+  }
+
+    while((temp) && temp->value == val)
+    {
+      freeptr=temp;
+//Nice trick... // When the element to be removed is the first one
+      temp=temp->next;
+      *head=temp;
+
+      free(freeptr);
+    }
+
+  while(temp!=NULL)
+  {
+    if((temp->next) && (temp->next)->value == val)
+    {
+      freeptr=temp->next;
+      temp->next=(temp->next)->next;
+      free(freeptr);
+    }
+    else //only go to next element, if element was not removed. (Else, youll be skipping 1 element(one next to the one removed) without checking if it is the one to be removed )
+    {
+    temp=temp->next;
+    }
+
+  }
+
+return SUCCESS;
+}
+#endif
+
+#ifdef Delete_list
+int Del_List(NodePtr* head)
+{
+  printf("\nDeleting List:\n");
+  if(*head==NULL)
+  {
+    printf("\nEmpty List. Head NULL");
+    return FALSE;
+  }
+  NodePtr currptr=*head;
+  NodePtr freeptr;
+  while(currptr!=NULL)
+  {
+      freeptr=currptr;
+      currptr=currptr->next;
+      *head=currptr;
+      free(freeptr);
+  }
+return SUCCESS;
+}
+#endif
+
+//Contains main function for Deletion code as well.
 #ifdef Insertion_sorted
 int InsertNode(NodePtr* head, int val)
 {
@@ -463,6 +635,7 @@ else
 }
 
 }
+
 
 int main()
 {
@@ -521,7 +694,192 @@ int main()
   ret=InsertNode(&headPtr,arr[0]);
 
   displaylist(headPtr);
+//Search List Code
+#ifdef Search_list
+char ch='N';
+int s_ele=-1;
+while(1)
+{
+  printf("\nDo you want to search ? (y/n)\n");
+  //Issue of multiple scanfs - study.... If you put in an invalid input here, then the next scanf will be skipped. Read more about it.
+  //https://stackoverflow.com/questions/9562218/c-multiple-scanfs-when-i-enter-in-a-value-for-one-scanf-it-skips-the-second-s
+  //https://www.daniweb.com/programming/software-development/threads/94275/multiple-scanf-s-issue
+  scanf("%c",&ch);
+  if(ch=='n' || ch=='N')
+  {
+    break;
+  }
+  else if(ch=='y' || ch=='Y')
+  {
+    printf("\nEnter element to be searched: ");
+    scanf("%d",&(s_ele));
+    int found=FALSE;
+    int foundpos=FALSE;
+    found=searchlist(&headPtr,s_ele,&foundpos);
+    if(found==SUCCESS)
+    {
+      printf("\nElement %d found. Position = %d\n",s_ele,foundpos);
+    }
+    else
+    {
+      printf("\nElement %d not found.\n",s_ele);
+    }
+  }
+  else
+  {
+    printf("\nInvalid Input. Try again:\n");
+  }
+}
+#endif
+//End of searchList code.
+#ifdef Delete_first_element
+int returnval;
+returnval = FALSE;
+returnval=Deletefirst(&headPtr);
+displaylist(headPtr);
 
+
+returnval=FALSE;
+returnval=Deletefirst(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletefirst(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletefirst(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletefirst(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletefirst(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletefirst(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletefirst(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletefirst(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletefirst(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletefirst(&headPtr);
+displaylist(headPtr);
+#endif
+
+#ifdef Delete_last_element
+int returnval;
+returnval = FALSE;
+returnval=Deletelast(&headPtr);
+displaylist(headPtr);
+
+
+returnval=FALSE;
+returnval=Deletelast(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletelast(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletelast(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletelast(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletelast(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletelast(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletelast(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletelast(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletelast(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletelast(&headPtr);
+displaylist(headPtr);
+
+
+#endif
+
+#ifdef Delete_all_occurrences
+int retval;
+
+retval=FALSE;
+retval=Delete_occur(&headPtr,1);
+displaylist(headPtr);
+
+retval=FALSE;
+retval=Delete_occur(&headPtr,2);
+displaylist(headPtr);
+
+retval=FALSE;
+retval=Delete_occur(&headPtr,5);
+displaylist(headPtr);
+
+
+retval=FALSE;
+retval=Delete_occur(&headPtr,4);
+displaylist(headPtr);
+
+
+retval=FALSE;
+retval=Delete_occur(&headPtr,3);
+displaylist(headPtr);
+
+
+retval=FALSE;
+retval=Delete_occur(&headPtr,5);
+displaylist(headPtr);
+
+
+
+//already all deleted... just like that (trying to delete on empty list).
+retval=FALSE;
+retval=Delete_occur(&headPtr,1);
+displaylist(headPtr);
+
+#endif
+
+#ifdef Delete_list
+  ret=FALSE;
+  ret=Del_List(&headPtr);
+  displaylist(headPtr);
+#endif
 return 0;
 }
+#endif
+
+//Code to Reverse list. Hemant Jain book mistake...
+#ifdef Reverse_list
+
+
 #endif
