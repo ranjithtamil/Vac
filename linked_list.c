@@ -602,7 +602,280 @@ return SUCCESS;
 #ifdef Insertion_sorted
 int InsertNode(NodePtr* head, int val)
 {
-NodePtr temp=malloc(1*(sizeof(NodePtr)));
+NodePtr temp=malloc(1*(sizeof(Node)));
+temp->value=val;
+temp->next=NULL;
+if(*head==NULL)
+{
+  *head=temp;
+  return SUCCESS;
+}
+NodePtr currptr=*head;
+if((currptr->value>val))
+{
+
+  temp->next=*head;
+  *head=temp;
+  return SUCCESS;
+}
+
+while((currptr->next) && currptr->next->value < val)
+{
+currptr=currptr->next;
+}
+temp->next=currptr->next;
+currptr->next=temp;
+return SUCCESS;
+}
+
+
+int main()
+{
+
+
+  int arr[5]={1,2,3,4,5};
+  NodePtr headPtr=NULL;
+
+  int ret=FALSE;
+  ret=InsertNode(&headPtr,arr[0]);
+
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[2]);
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[4]);
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[1]);
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[3]);
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[4]);
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[2]);
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[3]);
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[1]);
+
+  displaylist(headPtr);
+
+  ret=FALSE;
+  ret=InsertNode(&headPtr,arr[0]);
+
+  displaylist(headPtr);
+//Search List Code
+#ifdef Search_list
+char ch='N';
+int s_ele=-1;
+while(1)
+{
+  printf("\nDo you want to search ? (y/n)\n");
+  //Issue of multiple scanfs - study.... If you put in an invalid input here, then the next scanf will be skipped. Read more about it.
+  //https://stackoverflow.com/questions/9562218/c-multiple-scanfs-when-i-enter-in-a-value-for-one-scanf-it-skips-the-second-s
+  //https://www.daniweb.com/programming/software-development/threads/94275/multiple-scanf-s-issue
+  scanf("%c",&ch);
+  if(ch=='n' || ch=='N')
+  {
+    break;
+  }
+  else if(ch=='y' || ch=='Y')
+  {
+    printf("\nEnter element to be searched: ");
+    scanf("%d",&(s_ele));
+    int found=FALSE;
+    int foundpos=FALSE;
+    found=searchlist(&headPtr,s_ele,&foundpos);
+    if(found==SUCCESS)
+    {
+      printf("\nElement %d found. Position = %d\n",s_ele,foundpos);
+    }
+    else
+    {
+      printf("\nElement %d not found.\n",s_ele);
+    }
+  }
+  else
+  {
+    printf("\nInvalid Input. Try again:\n");
+  }
+}
+#endif
+//End of searchList code.
+#ifdef Delete_first_element
+int returnval;
+returnval = FALSE;
+returnval=Deletefirst(&headPtr);
+displaylist(headPtr);
+
+
+returnval=FALSE;
+returnval=Deletefirst(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletefirst(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletefirst(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletefirst(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletefirst(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletefirst(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletefirst(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletefirst(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletefirst(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletefirst(&headPtr);
+displaylist(headPtr);
+#endif
+
+#ifdef Delete_last_element
+int returnval;
+returnval = FALSE;
+returnval=Deletelast(&headPtr);
+displaylist(headPtr);
+
+
+returnval=FALSE;
+returnval=Deletelast(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletelast(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletelast(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletelast(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletelast(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletelast(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletelast(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletelast(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletelast(&headPtr);
+displaylist(headPtr);
+
+returnval=FALSE;
+returnval=Deletelast(&headPtr);
+displaylist(headPtr);
+
+
+#endif
+
+#ifdef Delete_all_occurrences
+int retval;
+
+retval=FALSE;
+retval=Delete_occur(&headPtr,1);
+displaylist(headPtr);
+
+retval=FALSE;
+retval=Delete_occur(&headPtr,2);
+displaylist(headPtr);
+
+retval=FALSE;
+retval=Delete_occur(&headPtr,5);
+displaylist(headPtr);
+
+
+retval=FALSE;
+retval=Delete_occur(&headPtr,4);
+displaylist(headPtr);
+
+
+retval=FALSE;
+retval=Delete_occur(&headPtr,3);
+displaylist(headPtr);
+
+
+retval=FALSE;
+retval=Delete_occur(&headPtr,5);
+displaylist(headPtr);
+
+
+
+//already all deleted... just like that (trying to delete on empty list).
+retval=FALSE;
+retval=Delete_occur(&headPtr,1);
+displaylist(headPtr);
+
+#endif
+
+#ifdef Delete_list
+  ret=FALSE;
+  ret=Del_List(&headPtr);
+  displaylist(headPtr);
+#endif
+return 0;
+}
+#endif
+
+
+//Contains main function for Deletion code as well.
+#ifdef Insertion_sorted_1
+int InsertNode(NodePtr* head, int val)
+{
+NodePtr temp=malloc(1*(sizeof(Node)));
 temp->value=val;
 temp->next=NULL;
 if(*head==NULL)
