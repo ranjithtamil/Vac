@@ -9,10 +9,14 @@
 
 // Binary search (Search for first occurrence).
 // #define Binary_Search
+
+#define Binary_Search_efficient
+
 #define debug_bin //(Debugging for Binary Search)
 
 //ToDo : Binary Search for Multiple Occurrence.
-#define Binary_Search_multiple_occurrence
+//#define Binary_Search_multiple_occurrence
+
 
 typedef struct Node Node;
 struct Node {
@@ -73,7 +77,26 @@ void displaylist(NodePtr head)
     head=head->next;
   }
 }
+#ifdef Binary_Search_efficient
+int binsearch(int arr[],int start,int end,int num)
+{
+  if(end<start)
+  return -1;
 
+int mid = start+((end-start)/2);
+if(arr[mid]==num)
+{
+  printf("\nFound");
+  printf("\nPosition %d",mid);
+  return 1;
+}
+else if(arr[mid]<num)
+{
+  return binsearch(arr,mid+1,end,num);
+}
+return binsearch(arr,start,mid-1,num);
+}
+#endif
 int main()
 {
 
@@ -507,4 +530,17 @@ printf("\nFinished looping. Now start=%d end=%d",start,end);
   return 0;
   #endif
 
+#ifdef Binary_Search_efficient
+
+NodePtr head=NULL;
+int ret;
+int numarray[]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,14,14,14,15,15,17};
+int num_of_elements=20;
+int num,no_of_instances=0;
+num=13; //num to search for
+int fnd=-1;
+
+fnd=binsearch(numarray,0,num_of_elements-1,num);
+if(fnd==-1){printf("\nElement not found or list empty");}
+#endif
 }
