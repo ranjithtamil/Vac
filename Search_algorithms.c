@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<math.h>
 #define FALSE 0
 #define TRUE 1
 
@@ -10,12 +11,57 @@
 // Binary search (Search for first occurrence).
 // #define Binary_Search
 
-#define Binary_Search_efficient
+//#define Binary_Search_efficient
 
-#define debug_bin //(Debugging for Binary Search)
+//#define debug_bin //(Debugging for Binary Search)
 
-//ToDo : Binary Search for Multiple Occurrence.
+//Binary Search for Multiple Occurrence.
 //#define Binary_Search_multiple_occurrence
+
+//ToDo : Jump search
+#define jump_search
+
+#ifdef Jump_Search_Theory
+/*Theory of Jump search
+
+Similar to binary search, but we jump blocks at a time. In a sorted array,
+Suppose we have an sorted array of elements : 1,2,3,4,5,6,7,8,9
+No. of elements (n) = 9 . Then suppose we have jump size (m) = 3.
+
+Let's say we want to search for number 7.
+First we jump to number 3. ( 7 > 3 , so jump again. )
+Then we jump to number 6.  ( 7 > 6 , so jump again. )
+Then we jump to number 9.  ( 7 < 9 , so dont jump again. Track back one by one until m-1 times, i.e. 3-1=2 times).
+7 Found
+
+**********************************************************
+
+Thus in worst case, we may have to jump maximum times (in case of element size=9, jumpsize=3)
+We have maximum number of jumps = (elementsize n / jumpsize m ) = 3.
+Maximum no of jumps possible = 3.
+Max jumps = n/m
+Max Linear Traversal (Back tracking) = m-1
+Also, worst case traversal in this case is for element 7 (which is Max jumps + Max Linear Traversal )
+                                                      = ( n/m + (m-1))
+
+Therefore, worst case traversal = n/m + m-1.
+What should be ideal jumpblock size ?
+To find this , minimise worst case traversal w.r.t jumpblock size.
+
+i.e., minimise (n/m + m-1) w.r.t (m)
+
+thus { d/dm (n/m + m-1) = 0 }
+=>   { (-n/m^2) + 1 = 0 }
+=>   { (-n/m^2) = -1 }
+=>   { (n) = m^2 }
+=>   { (m) = root(n) }
+
+
+Thus, for best performance, Jump Block size should be selected as root of total number of elements
+in sorted array
+
+*/
+#endif
 
 
 typedef struct Node Node;
@@ -530,7 +576,7 @@ printf("\nFinished looping. Now start=%d end=%d",start,end);
   return 0;
   #endif
 
-#ifdef Binary_Search_efficient
+  #ifdef Binary_Search_efficient
 
 NodePtr head=NULL;
 int ret;
@@ -542,5 +588,53 @@ int fnd=-1;
 
 fnd=binsearch(numarray,0,num_of_elements-1,num);
 if(fnd==-1){printf("\nElement not found or list empty");}
-#endif
+  #endif
+
+  #ifdef jump_search
+  int a[]={1,2,3,4,5,6,7,8,9};
+  int found=-1;
+  int max = 9;
+  //(sizeof(a)/sizeof(int)); // number of elements
+  int num; //element to be searched
+  printf("\nEnter number to be searched: ");
+  scanf("%d",&num);
+
+  int ele = sqrt(max);  //jump block size
+  int curr = ele - 1; //index of initial element
+
+  while(curr <= max)
+  {
+    if(a[curr] == num)
+    {
+      found=TRUE;
+      printf("\n %d\n",curr);
+      break;
+    }
+    else if(a[curr] < num)
+    {
+      curr=curr+ele;
+    }
+    else
+    {
+      for(int i = curr; i>= (curr - (ele-1)); i-- )
+      {
+        if(a[i] == num)
+        {
+          found=TRUE;
+          printf("\n %d\n",i);
+          break;
+        }
+      }
+      break;
+    }
+
+
+
+
+  }
+  if(found==-1)
+  {
+    printf("\nNot found\n");
+  }
+  #endif
 }
