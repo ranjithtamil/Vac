@@ -6,9 +6,11 @@
 //1. Selection_Sort - iterates over list, finds smallest element of unsorted side of list, and adds it to sorted subarray of list.
 //#define Selection_Sort
 
-//2. Insertion Sort - 
+//2. Insertion Sort -
 //#define Insertion_Sort
 
+//3. Merge Sort -
+#define Merge_Sort
 
 //Selection_Sort
 #ifdef Selection_Sort
@@ -128,3 +130,90 @@ int main()
 }
 #endif
 //Insertion_Sort is stable algorithm
+
+
+//Merge_Sort
+//https://www.geeksforgeeks.org/merge-sort/
+#ifdef Merge_Sort
+
+void Merge(int *arra,int l,int m,int r)
+{
+  int n1=m - l + 1; //no of elements in first half (l ... m)
+  int n2=r - m; //no of elements in second half (m+1 ... r), i.e. (r - (m+1) +1)
+
+  int L[n1];
+  int R[n2];
+int i,j,k;
+  for(i=0;i<n1;i++)
+  {
+    L[i]=arra[l+i];
+  }
+
+  for(j=0;j<n2;j++)
+  {
+    R[j]=arra[m+1+j];
+  }
+i=0;
+j=0;
+  for(k=l;i<n1 && j<n2;)   //very important that k = l. If k were 0 it wil start with k = 0 for even subarrays.Also important that limits are i<n1 && j<n2.
+  {
+    if(L[i] <= R[j])
+    {
+      arra[k]=L[i];
+      i++;
+    }
+    else
+    {
+      arra[k]=R[j];
+      j++;
+    }
+    k++;
+  }
+  while(i < n1)
+  {
+    arra[k]=L[i];
+    i++;
+    k++;
+  }
+  while(j < n2)
+  {
+    arra[k]=R[j];
+    j++;
+    k++;
+  }
+
+}
+void Merge_sort(int *arra,int l,int r)
+{
+
+  if(l<r)
+  {
+    int m=l+(r-l)/2; //very important :- mid element = left + ((right-left)/2 );
+    Merge_sort(arra,l,m);
+    Merge_sort(arra,m+1,r);
+
+    Merge(arra,l,m,r);
+
+  }
+}
+int main()
+{
+
+  int arr[]={5,4,3,2,5,4,3,0,1,10};
+
+  int arr_length=((sizeof(arr))/(sizeof(int)));
+  int ret=FALSE;
+  int l=0,r=arr_length - 1;
+  Merge_sort(arr,l,r);
+
+
+    printf("\nAfter Sorting:\n");
+    for(int i=0;i<arr_length;i++)
+    {
+      printf("\n%d",arr[i]);
+
+    }
+    printf("\n");
+}
+
+#endif
