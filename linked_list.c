@@ -183,6 +183,84 @@ int main()
 #endif //Insertion_beginning
 
 
+//Code to Reverse_List. Reverse Function calls are called from Insertion_Sorted
+#ifdef Reverse_list
+
+
+int Deletefirstelement(NodePtr* headPtr)
+{
+
+  printf("\nDeletefirst element\n");
+  if(*headPtr==NULL)
+  {
+    printf("\nHead is NULL.Empty List\n");
+    return FALSE;
+  }
+int deleted_value=(*headPtr)->value;
+NodePtr temp=*headPtr;
+*headPtr=(*headPtr)->next;
+free(temp);
+return deleted_value;
+}
+
+
+
+int InsertNode_at_beginning(NodePtr* head,int val)
+{
+  printf("\nInsert_At_Beginning element\n");
+
+  NodePtr temp=malloc(1 * sizeof(Node));
+  if(!temp)
+  {
+    printf("\nNode Creation (malloc) Failure");
+    return FAIL;
+  }
+
+  //zero condition
+  if(*head==NULL)
+  {
+    temp->value=val;
+    temp->next=NULL;
+  }//general case
+  else
+  {
+    temp->value=val;
+    temp->next=*head;
+  }
+  *head=temp;
+  return SUCCESS;
+}
+
+
+int reverseList(NodePtr* head)
+{
+  NodePtr headPtr2=NULL;
+
+  NodePtr currptr=*head;
+
+  if(currptr==NULL)
+  {
+    printf("\nList 1 is empty\n");
+  }
+  while(currptr!=NULL)
+  {
+  int deleted_element=FALSE;
+  deleted_element=Deletefirstelement(head);
+  currptr=*head; //update so that currentptr also gets updated to latest head in list. This is the  way in which currptr gets updated to traverse till the end of the list.
+  int ret=FALSE;
+  ret=InsertNode_at_beginning(&headPtr2,deleted_element);
+  //currptr=currptr->next;
+  }
+  //*head=headPtr2;
+  displaylist(headPtr2);
+
+  return SUCCESS;
+}
+
+
+#endif
+
+
 //Code to insert at end of linkedlist(given only head pointer) - compress
 #ifdef Insertion_end
 int Insertend(NodePtr* head,int val)
@@ -516,15 +594,15 @@ int Deletelast(NodePtr* head)
   }
   if(prevptr==temp)
   {
-    //Doubt on this one-doublefree
+    //Doubt on this one-doublefree. // actually you dont need to do malloc for temp and prevptr. Then in that case, they will be on stack.
     free(prevptr);
     *head=NULL;
   }
   else
   {
-  NodePtr tofreeptr=malloc(1*sizeof(Node));
+  NodePtr tofreeptr=malloc(1*sizeof(Node));   // here also, no need to malloc, directly do tofreeptr=prevptr->next;
   tofreeptr=prevptr->next;
-  prevptr->next=temp->next;
+  prevptr->next=temp->next;   //I think in this case (Delete from last), in this case, temp->next==NULL. So you could actually do : prevptr->next=NULL;
   free(tofreeptr);
   }
   return SUCCESS;
@@ -866,10 +944,25 @@ displaylist(headPtr);
   ret=Del_List(&headPtr);
   displaylist(headPtr);
 #endif
+
+
+//Code to Reverse list.
+#ifdef Reverse_list
+//List 1 has headPtr as headpointer
+//List2 (The list which is going to be reverse of List 1) shall have headPtr2 as headpointer
+  ret=FALSE;
+  ret=reverseList(&headPtr);
+
+
+  printf("\nReversed List:\n");
+//  displaylist(headPtr);
+
+#endif
+
+
 return 0;
 }
 #endif
-
 
 //Contains main function for Deletion code as well.
 #ifdef Insertion_sorted_1
@@ -1149,10 +1242,4 @@ displaylist(headPtr);
 #endif
 return 0;
 }
-#endif
-
-//Code to Reverse list. Hemant Jain book mistake...
-#ifdef Reverse_list
-
-
 #endif
