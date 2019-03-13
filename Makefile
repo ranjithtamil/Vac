@@ -1,25 +1,43 @@
-SOURCE_DIR:= .
-BIN:=$(SOURCE_DIR)/bin
-OBJECT_DIR:=$(BIN)
-SOURCES:=$(wildcard $(SOURCE_DIR)/*.c)
-OBJECT_FILES:=$(patsubst %.c, %.o, $(SOURCES))
-EXEC_FILES:=$(patsubst %.o, %.a, $(OBJECT_FILES))
-OBJECTS=$(addprefix $(OBJECT_DIR)/,$(OBJECT_FILES))
-EXECS=$(addprefix $(OBJECT_DIR)/,$(EXEC_FILES))
-#or you could do both steps above within a single assignment
-#OBJECTS:=$(addprefix $(OBJECT_DIR)/,$(patsubst %.c, %.o, $(SOURCES)))
-all: $(SOURCES) $(OBJECTS) $(EXECS)
+CC=gcc -g -std=c99
+CCFLAGS=-Wall
+LDFLAGS= -lm
 
-$(OBJECT_DIR)/%.o: $(SOURCE_DIR)/%.c
-	mkdir -p $(OBJECT_DIR)
-	gcc -g -std=c99 -o $@ -c $<
-	chmod 777 $(OBJECT_DIR)/*
+TARGET_EXEC ?= a.out
 
-$(OBJECT_DIR)/%.a: $(OBJECT_DIR)/%.o
-	mkdir -p $(OBJECT_DIR)
-	gcc -g -o $@ $< -lm
+BUILD_DIR ?= ./build
+SRC_DIRS ?= ./src
+#CPPFLAGS+=-Wall -Wextra 
+#-Werror
+LDFLAGS+=-lstdc++
+SRCS := $(shell find $(SRC_DIRS) -name *.cpp -or -name *.c -or -name *.s)
+OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
+#DEPS := $(OBJS:.o=.d)
+
+INC_DIRS := $(shell find $(SRC_DIRS) -type d)
+INC_FLAGS := $(addprefix -I,$(INC_DIRS))
+
+CPPFLAGS ?= $(INC_FLAGS) 
+all: $(OBJS)
+	chmod -R 777 $(BUILD_DIR)/*
+
+
+$(BUILD_DIR)/%.s.o: %.s
+	$(MKDIR_P) $(dir $@)
+	$(AS) $(ASFLAGS) -c $< -o $@
+
+
+$(BUILD_DIR)/%.c.o: %.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< -o $@ $(LDFLAGS)
+
+$(BUILD_DIR)/%.cpp.o: %.cpp
+	$(MKDIR_P) $(dir $@)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $< -o $@ $(LDFLAGS)
+.PHONY: clean
 
 clean:
-	rm -rf $(OBJECT_DIR)/*.o
-	rm -rf $(OBJECT_DIR)/*.a
-	rm -rf $(OBJECT_DIR)
+	$(RM) -r $(BUILD_DIR)
+
+-include $(DEPS)
+
+MKDIR_P ?= mkdir -p
